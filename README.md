@@ -20,9 +20,9 @@ Please note that the newer version of some libraries from scikit-learn used in t
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder.
 
 Specifically, the crawler will download:
-- 'http://cochranelibrary.com/cdsr/doi/{}/full'
-- 'http://cochranelibrary.com/cdsr/doi/{}/references'
-- 'http://cochranelibrary.com/cdsr/doi/{}/information'
+- ```http://cochranelibrary.com/cdsr/doi/{}/full```
+- ```http://cochranelibrary.com/cdsr/doi/{}/references```
+- ```http://cochranelibrary.com/cdsr/doi/{}/information```
 where {} is the DOI
 
 Alternatively, the downloaded HTML files are also included in this repository.
@@ -31,11 +31,11 @@ Alternatively, the downloaded HTML files are also included in this repository.
 **Default setting**
 This code will extract relevant information from the respective HTML files:
 - Search date
-&nbsp;Abstract > Search methods, in the HTML file downloaded from 'http://cochranelibrary.com/cdsr/doi/{}/full', where {} is the DOI
+&nbsp;Abstract > Search methods, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/full```, where {} is the DOI
 - Number of trials, number of participants in each trial
-&nbsp;Characteristics of studies > Characteristics of included studies, in the HTML file downloaded from 'http://cochranelibrary.com/cdsr/doi/{}/references', where {} is the DOI
+&nbsp;Characteristics of studies > Characteristics of included studies, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/references```, where {} is the DOI
 - Conclusion
-&nbsp;What's New and History, in the HTML file downloaded from 'http://cochranelibrary.com/cdsr/doi/{}/information'
+&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```
 
 The output is 'extracted_info.txt' in 'Results/' folder.
 
