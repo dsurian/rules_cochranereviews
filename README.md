@@ -14,48 +14,50 @@ The code was built and tested on:
 
 ### Note
 ---
-Please note that the newer version of some libraries from scikit-learn used in this code might have different default values for the parameters, or, different available parameters, which could give different results.
-
+Please note that the newer version of some libraries from scikit-learn used in this code might have different default values for the parameters, or, different available parameters, which could give different results.<br />
+<br />
 ### Usage
 ---
-There are 3 python scripts:
-1. crawler.py
-2. extractor.py
-3. classifiers.py
-
+There are 3 python scripts:<br />
+1. crawler.py<br />
+2. extractor.py<br />
+3. classifiers.py<br />
+<br />
 You can create your own Results folder, but the folder should in the same directory with the python scripts and has the same structure, i.e.:
-
-Main folder
-  |- crawler.py  
-  |- extractor.py  
-  |- classifier.py  
-  |- Datasets  
-  |    |- DOI.csv  
-  |- Results  
-  |- HTML_SystematicReviews  
-  |- **Your_folder**  
-  |     |- **Results**  
-  |     |- **HTML_SystematicReviews**  
+<br />
+Main folder<br />
+&nbsp;|- crawler.py<br />
+&nbsp;|- extractor.py<br />
+&nbsp;|- classifier.py<br />
+&nbsp;|- Datasets<br />
+&nbsp;|    |- DOI.csv<br />
+&nbsp;|- Results<br />
+&nbsp;|- HTML_SystematicReviews<br />
+&nbsp;|- **Your_folder**<br />
+&nbsp;|     |- **Results**<br />
+&nbsp;|     |- **HTML_SystematicReviews**<br />
+<br />
+<br />
   
-  
-**crawler.py**  
-The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.
-
-Re-running the script will download HTML files to your own folder. To run:
-python crawler.py
-You will be presented a menu:
-> Enter your folder name:
-
+**crawler.py**<br />
+The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.<br />
+<br />
+Re-running the script will download HTML files to your own folder. To run:<br />
+```python crawler.py```
+You will be presented a menu:<br />
+```> Enter your folder name:```
+<br />
 You need to enter your folder name, i.e., **Your_folder**
-
+<br />
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder.
-
-Specifically, the crawler will download:
-- ```http://cochranelibrary.com/cdsr/doi/{}/full```
-- ```http://cochranelibrary.com/cdsr/doi/{}/references```
-- ```http://cochranelibrary.com/cdsr/doi/{}/information```
+<br />
+Specifically, the crawler will download:<br />
+- ```http://cochranelibrary.com/cdsr/doi/{}/full```<br />
+- ```http://cochranelibrary.com/cdsr/doi/{}/references```<br />
+- ```http://cochranelibrary.com/cdsr/doi/{}/information```<br />
 where {} is the DOI
-
+<br />
+<br />
 
 
 
