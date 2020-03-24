@@ -1,5 +1,8 @@
 # Extracting relevant information from Cochrane reviews
-This repository contains the updated version of the implementation of rules for automatically extracting relevant information from Cochrane reviews. Original implementation: https://github.com/Rabia-Bashir/rules_data_ext/  Credit to: Rabia Bashir.
+This repository contains an updated version of the implementation of rules for automatically extracting relevant information from Cochrane reviews. 
+
+Original implementation: https://github.com/Rabia-Bashir/rules_data_ext/  
+Credit to: Rabia Bashir.
 
 ### Environment
 ---
@@ -15,7 +18,27 @@ Please note that the newer version of some libraries from scikit-learn used in t
 
 ### Usage
 ---
-* crawler.py
+There are 3 python scripts:
+1. crawler.py
+2. extractor.py
+3. classifiers.py
+
+You can create your own Results folder, but the folder should in the same directory with the python scripts and has the same structure, i.e.:
+
+Main folder
+  |- crawler.py
+  |- extractor.py
+  |- classifier.py
+  |- Datasets
+  |    |- DOI.csv
+  |- Results
+  |- HTML_SystematicReviews
+  |- **Your_folder**
+  |     |- **Results**
+  |     |- **HTML_SystematicReviews**
+
+
+***** **crawler.py**
 **Default setting**
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder.
 
@@ -25,9 +48,17 @@ Specifically, the crawler will download:
 - ```http://cochranelibrary.com/cdsr/doi/{}/information```
 where {} is the DOI
 
-Alternatively, the downloaded HTML files are also included in this repository.
+Alternatively, the downloaded HTML files are also included in 'HTML_SystematicReviews/' folder.
 
-* extractor.py
+To run:
+python crawler.py
+You will be presented a menu:
+> Enter your folder name:
+
+You need to enter your folder name, i.e., **Your_folder**
+
+
+***** **extractor.py**
 **Default setting**
 This code will extract relevant information from the respective HTML files:
 - Search date
@@ -39,12 +70,25 @@ This code will extract relevant information from the respective HTML files:
 
 The output is 'extracted_info.txt' in 'Results/' folder.
 
+Main folder
+  |- crawler.py
+  |- extractor.py
+  |- classifier.py
+  |- Datasets
+  |    |- DOI.csv
+  |- Results
+  |- HTML_SystematicReviews
+  |- **Your_folder**
+  |     |- **Results**
+  |     |- **HTML_SystematicReviews**
 
 
 
 
 
-* classifiers.py
+
+
+* **classifiers.py**
 **Running the code**
 Type   python classifiers.py    on the console, or run classifiers.py from IDE. A menu will appear:
 ```
@@ -65,7 +109,19 @@ This choice will:
 - Retrained classifiers using the 80% training set, and reproduce the results on the 20% test set.
 
 **[3] Using your own results folder**
-You can create your own folder to separate the results, however, this folder should be in the same directory with the classifier.py and has 
+You can create your own folder to separate the results, however, this folder should be in the same directory with the classifier.py and has the same structure, i.e.:
+
+Main folder
+  |- crawler.py
+  |- extractor.py
+  |- classifier.py
+  |- Datasets
+  |    |- DOI.csv
+  |- Results
+  |- HTML_SystematicReviews
+  |- **Your_folder**
+  |     |- **Results**
+  |     |- **HTML_SystematicReviews**
 
 
 The code contains 3 classifiers: logistic regression, decision tree, and random forest. The classifiers are trained using 80% of dataset and tested using the rest 20%.
