@@ -41,7 +41,7 @@ Main folder<br />
 **crawler.py**<br />
 The downloaded HTML files are included in HTML_SystematicReviews/ folder.<br />
 Re-running the script will download HTML files to your own folder. To run:<br />
-&nbsp;&nbsp;&nbsp;&nbsp; ```python crawler.py``` <br /><br />
+&nbsp;&nbsp;&nbsp;&nbsp; ```python crawler.py``` <br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;```> Enter your folder name:```
 <br />
@@ -64,14 +64,14 @@ This code will extract relevant information from the HTML files:
 - Number of trials, number of participants in each trial<br />
 &nbsp;&nbsp;&nbsp;&nbsp;Characteristics of studies > Characteristics of included studies, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/references```, where {} is the DOI<br />
 - Conclusion<br />
-&nbsp;&nbsp;&nbsp;&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```<br />
+&nbsp;&nbsp;&nbsp;&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```
 <br />
 To run:<br />
 &nbsp;&nbsp;&nbsp;&nbsp; ```python extractor.py``` <br /><br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;&nbsp;&nbsp; ```> Enter your folder name:``` 
 <br />
-The code will read the HTML files in HTML_SystematicReviews folder in Your_Folder and produce 'extracted_info.txt' in Results folder also in Your_Folder.<br />
+The code will read the HTML files in HTML_SystematicReviews folder in **Your_Folder** and produce 'extracted_info.txt' in Results folder also in **Your_Folder**.<br />
 
 
 
@@ -80,7 +80,7 @@ The code will read the HTML files in HTML_SystematicReviews folder in Your_Folde
 
 
 
-
+<br /><br />
 * **classifiers.py**
 **Running the code**
 Type   python classifiers.py    on the console, or run classifiers.py from IDE. A menu will appear:
