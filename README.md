@@ -33,22 +33,21 @@ Main folder<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- DOI.csv <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Your_folder <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- **Your_folder** <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
-<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br /><br />
 
 **crawler.py**<br />
 The downloaded HTML files are included in HTML_SystematicReviews/ folder.<br />
 Re-running the script will download HTML files to your own folder. To run:<br />
 &nbsp;&nbsp;&nbsp;&nbsp; ```python crawler.py``` <br />
 You will be presented a menu:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;```> Enter your folder name:```
-<br />
-You need to enter your folder name, i.e., Your_folder
-<br /><br />
-This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder in Your_Folder (see above).
-<br />
+&nbsp;&nbsp;&nbsp;&nbsp;```> Enter your folder name:```<br />
+
+You need to enter your folder name, i.e., Your_folder<br /><br />
+
+This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder in Your_Folder (see above).<br />
+
 Specifically, the crawler will download:<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/full```<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/references```<br />
@@ -70,7 +69,7 @@ To run:<br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;&nbsp;&nbsp; ```> Enter your folder name:``` <br />
 
-The code will read the HTML files in HTML_SystematicReviews folder in Your_Folder and produce 'extracted_info.txt' in Results folder also in Your_Folder.<br />
+The code will read the HTML files in HTML_SystematicReviews folder in Your_Folder and produce 'extracted_info.txt' in Results folder also in Your_Folder. Alternatively, the 'extracted_info.txt' is also provided in 'Results/' folder.<br />
 
 
 
