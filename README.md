@@ -18,7 +18,7 @@ Please note that the newer version of some libraries from scikit-learn used in t
 <br />
 ### Usage
 ---
-There are 3 python scripts:<br />
+There are 3 python scripts:
 1. crawler.py<br />
 2. extractor.py<br />
 3. classifiers.py<br />
@@ -34,8 +34,8 @@ Main folder<br />
 &nbsp;|- Results<br />
 &nbsp;|- HTML_SystematicReviews<br />
 &nbsp;|- **Your_folder**<br />
-&nbsp;|&nbsp;|- **Results**<br />
-&nbsp;|&nbsp;|- **HTML_SystematicReviews**<br />
+&nbsp;|&nbsp;&nbsp;|- **Results**<br />
+&nbsp;|&nbsp;&nbsp;|- **HTML_SystematicReviews**<br />
 <br />
 <br />
   
