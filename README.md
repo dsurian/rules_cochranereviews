@@ -30,12 +30,12 @@ Main folder<br />
 &nbsp;|- extractor.py<br />
 &nbsp;|- classifier.py<br />
 &nbsp;|- Datasets<br />
-&nbsp;|    |- DOI.csv<br />
+&nbsp;|&nbsp;|- DOI.csv<br />
 &nbsp;|- Results<br />
 &nbsp;|- HTML_SystematicReviews<br />
 &nbsp;|- **Your_folder**<br />
-&nbsp;|     |- **Results**<br />
-&nbsp;|     |- **HTML_SystematicReviews**<br />
+&nbsp;|&nbsp;|- **Results**<br />
+&nbsp;|&nbsp;|- **HTML_SystematicReviews**<br />
 <br />
 <br />
   
@@ -43,9 +43,9 @@ Main folder<br />
 The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.<br />
 <br />
 Re-running the script will download HTML files to your own folder. To run:<br />
-```python crawler.py```
+&nbsp;```python crawler.py```<br />
 You will be presented a menu:<br />
-```> Enter your folder name:```
+&nbsp;```> Enter your folder name:```
 <br />
 You need to enter your folder name, i.e., **Your_folder**
 <br />
