@@ -22,6 +22,7 @@ There are 3 python scripts:
 1. crawler.py<br />
 2. extractor.py<br />
 3. classifiers.py<br />
+
 You can create your own Results folder, but the folder should in the same directory with the python scripts and has the same structure, i.e.:
 <br />
 Main folder<br />
@@ -32,9 +33,9 @@ Main folder<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- DOI.csv <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- __Your folder__ <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- __Results__ <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- __HTML_SystematicReviews__ <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Your folder <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
 <br />
 <br />
   
