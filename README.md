@@ -37,8 +37,7 @@ Main folder<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
 <br />
-<br />
-  
+
 **crawler.py**<br />
 The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.<br />
 Re-running the script will download HTML files to your own folder. To run:<br />
@@ -58,33 +57,23 @@ where {} is the DOI
 <br />
 <br />
 
+**extractor.py**<br />
+This code will extract relevant information from the HTML files:<br />
+- Search date<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Abstract > Search methods, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/full```, where {} is the DOI<br />
+- Number of trials, number of participants in each trial<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Characteristics of studies > Characteristics of included studies, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/references```, where {} is the DOI<br />
+- Conclusion<br />
+&nbsp;&nbsp;&nbsp;&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```<br />
+<br />
+To run:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;```python extractor.py```<br /><br />
+You will be presented a menu:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;```> Enter your folder name:```
+<br />
+The code will read the HTML files in HTML_SystematicReviews folder in your folder and produce 'extracted_info.txt' in Results folder also in your folder.<br />
 
 
-
-
-***** **extractor.py**
-**Default setting**
-This code will extract relevant information from the respective HTML files:
-- Search date
-&nbsp;Abstract > Search methods, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/full```, where {} is the DOI
-- Number of trials, number of participants in each trial
-&nbsp;Characteristics of studies > Characteristics of included studies, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/references```, where {} is the DOI
-- Conclusion
-&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```
-
-The output is 'extracted_info.txt' in 'Results/' folder.
-
-Main folder
-  |- crawler.py
-  |- extractor.py
-  |- classifier.py
-  |- Datasets
-  |    |- DOI.csv
-  |- Results
-  |- HTML_SystematicReviews
-  |- **Your_folder**
-  |     |- **Results**
-  |     |- **HTML_SystematicReviews**
 
 
 
