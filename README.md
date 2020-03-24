@@ -26,31 +26,30 @@ There are 3 python scripts:
 You can create your own Results folder, but the folder should in the same directory with the python scripts and has the same structure, i.e.:
 <br />
 Main folder<br />
-&nbsp;|- crawler.py<br />
-&nbsp;|- extractor.py<br />
-&nbsp;|- classifier.py<br />
-&nbsp;|- Datasets<br />
-&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- DOI.csv<br />
-&nbsp;|- Results<br />
-&nbsp;|- HTML_SystematicReviews<br />
-&nbsp;|- **Your_folder**<br />
-&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- **Results**<br />
-&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- **HTML_SystematicReviews**<br />
+&nbsp;&nbsp;|- crawler.py<br />
+&nbsp;&nbsp;|- extractor.py <br />
+&nbsp;&nbsp;|- classifier.py <br />
+&nbsp;&nbsp;|- Datasets <br />
+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- DOI.csv <br />
+&nbsp;&nbsp;|- Results <br />
+&nbsp;&nbsp;|- HTML_SystematicReviews <br />
+&nbsp;&nbsp;|- **Your_folder** <br />
+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- **Results** <br />
+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- **HTML_SystematicReviews** <br />
 <br />
 <br />
   
 **crawler.py**<br />
-The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.<br />
-<br />
-Re-running the script will download HTML files to your own folder. To run:<br />
-&nbsp;&nbsp;```python crawler.py```<br />
+The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.<br /><br />
+Re-running the script will download HTML files to your own folder. To run:<br /><br />
+&nbsp;&nbsp;```python crawler.py```<br /><br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;```> Enter your folder name:```
-<br />
+<br /><br />
 You need to enter your folder name, i.e., **Your_folder**
-<br />
+<br /><br />
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder.
-<br />
+<br /><br />
 Specifically, the crawler will download:<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/full```<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/references```<br />
