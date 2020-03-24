@@ -33,7 +33,7 @@ Main folder<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- DOI.csv <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Your folder <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Your_folder <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- Results <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- HTML_SystematicReviews <br />
 <br />
@@ -48,7 +48,7 @@ You will be presented a menu:<br />
 <br />
 You need to enter your folder name, i.e., **Your_folder**
 <br /><br />
-This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder.
+This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder in Your_Folder (see above).
 <br />
 Specifically, the crawler will download:<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/full```<br />
