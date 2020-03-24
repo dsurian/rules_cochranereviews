@@ -26,20 +26,28 @@ There are 3 python scripts:
 You can create your own Results folder, but the folder should in the same directory with the python scripts and has the same structure, i.e.:
 
 Main folder
-  |- crawler.py
-  |- extractor.py
-  |- classifier.py
-  |- Datasets
-  |    |- DOI.csv
-  |- Results
-  |- HTML_SystematicReviews
-  |- **Your_folder**
-  |     |- **Results**
-  |     |- **HTML_SystematicReviews**
+  |- crawler.py  
+  |- extractor.py  
+  |- classifier.py  
+  |- Datasets  
+  |    |- DOI.csv  
+  |- Results  
+  |- HTML_SystematicReviews  
+  |- **Your_folder**  
+  |     |- **Results**  
+  |     |- **HTML_SystematicReviews**  
+  
+  
+**crawler.py**  
+The downloaded HTML files are included in 'HTML_SystematicReviews/' folder.
 
+Re-running the script will download HTML files to your own folder. To run:
+python crawler.py
+You will be presented a menu:
+> Enter your folder name:
 
-***** **crawler.py**
-**Default setting**
+You need to enter your folder name, i.e., **Your_folder**
+
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder.
 
 Specifically, the crawler will download:
@@ -48,14 +56,9 @@ Specifically, the crawler will download:
 - ```http://cochranelibrary.com/cdsr/doi/{}/information```
 where {} is the DOI
 
-Alternatively, the downloaded HTML files are also included in 'HTML_SystematicReviews/' folder.
 
-To run:
-python crawler.py
-You will be presented a menu:
-> Enter your folder name:
 
-You need to enter your folder name, i.e., **Your_folder**
+
 
 
 ***** **extractor.py**
