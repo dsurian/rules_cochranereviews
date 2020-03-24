@@ -63,13 +63,13 @@ This code will extract relevant information from the HTML files:
 - Number of trials, number of participants in each trial<br />
 &nbsp;&nbsp;&nbsp;&nbsp;Characteristics of studies > Characteristics of included studies, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/references```, where {} is the DOI<br />
 - Conclusion<br />
-&nbsp;&nbsp;&nbsp;&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```
-<br />
+&nbsp;&nbsp;&nbsp;&nbsp;What's New and History, in the HTML file downloaded from ```http://cochranelibrary.com/cdsr/doi/{}/information```<br />
+
 To run:<br />
 &nbsp;&nbsp;&nbsp;&nbsp; ```python extractor.py``` <br /><br />
 You will be presented a menu:<br />
-&nbsp;&nbsp;&nbsp;&nbsp; ```> Enter your folder name:``` 
-<br />
+&nbsp;&nbsp;&nbsp;&nbsp; ```> Enter your folder name:``` <br />
+
 The code will read the HTML files in HTML_SystematicReviews folder in Your_Folder and produce 'extracted_info.txt' in Results folder also in Your_Folder.<br />
 
 
