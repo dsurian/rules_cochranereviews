@@ -45,7 +45,7 @@ Re-running the script will download HTML files to your own folder. To run:<br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;```> Enter your folder name:```
 <br />
-You need to enter your folder name, i.e., **Your_folder**
+You need to enter your folder name, i.e., Your_folder
 <br /><br />
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder in Your_Folder (see above).
 <br />
@@ -55,8 +55,6 @@ Specifically, the crawler will download:<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/information```<br />
 where {} is the DOI
 <br />
-<br />
-
 **extractor.py**<br />
 This code will extract relevant information from the HTML files:
 - Search date<br />
@@ -71,7 +69,7 @@ To run:<br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;&nbsp;&nbsp; ```> Enter your folder name:``` 
 <br />
-The code will read the HTML files in HTML_SystematicReviews folder in **Your_Folder** and produce 'extracted_info.txt' in Results folder also in **Your_Folder**.<br />
+The code will read the HTML files in HTML_SystematicReviews folder in Your_Folder and produce 'extracted_info.txt' in Results folder also in Your_Folder.<br />
 
 
 
