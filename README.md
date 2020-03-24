@@ -44,7 +44,7 @@ Re-running the script will download HTML files to your own folder. To run:<br />
 You will be presented a menu:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;```> Enter your folder name:```<br />
 
-You need to enter your folder name, i.e., Your_folder<br /><br />
+You need to enter your folder name, i.e., Your_folder<br />
 
 This code will read a list of DOI in 'Datasets/DOI.csv' and download the reviews with .pub2 (original version) and .pub3 (updated version) from Cochrane library. The downloaded HTML files are saved to HTML_SystematicReviews folder in Your_Folder (see above).<br />
 
@@ -71,55 +71,28 @@ You will be presented a menu:<br />
 
 The code will read the HTML files in HTML_SystematicReviews folder in Your_Folder and produce 'extracted_info.txt' in Results folder also in Your_Folder. Alternatively, the 'extracted_info.txt' is also provided in 'Results/' folder.<br />
 
-
-
-
-
-
-
-
-<br /><br />
-* **classifiers.py**
-**Running the code**
+**classifiers.py**<br />
 Type   python classifiers.py    on the console, or run classifiers.py from IDE. A menu will appear:
 ```
 [1] Run default setting and load previous trained classifiers
 [2] Run default setting and retrained the classifiers
 [3] Enter your own results folder
 ```
-**[1] Default setting and load previous trained classifiers**
-This choice will:
-- Read 'extracted_info.txt' in 'Results/' folder, and translate to features in 'Results/features.txt'
-- Split into 80% for training set (not used), and 20% as test set.
-- Load previous trained classifiers in 'Results/cpickle/' folder and reproduce the results on the 20% test set
+**[1] Load previous trained classifiers**<br />
+This choice will:<br />
+- Read features in 'Results/features.txt'<br />
+- Split into 80% for training set (not used), and 20% as test set<br />
+- Load previous trained classifiers in 'Results/cpickle/' folder and produce the results on the 20% test set<br />
 
-**[2] Default setting and retrained the classifiers**
-This choice will:
-- Read 'extracted_info.txt' in 'Results/' folder, and translate to features in 'Results/features.txt'
-- Split into 80% for training set (not used), and 20% as test set.
-- Retrained classifiers using the 80% training set, and reproduce the results on the 20% test set.
-
-**[3] Using your own results folder**
-You can create your own folder to separate the results, however, this folder should be in the same directory with the classifier.py and has the same structure, i.e.:
-
-Main folder
-  |- crawler.py
-  |- extractor.py
-  |- classifier.py
-  |- Datasets
-  |    |- DOI.csv
-  |- Results
-  |- HTML_SystematicReviews
-  |- **Your_folder**
-  |     |- **Results**
-  |     |- **HTML_SystematicReviews**
+**[2] Retrained the classifiers on your dataset**<br />
+This choice will:<br />
+- You will need to enter Your_folder name<br />
+- Read 'extracted_info.txt' in 'Your_folder/Results/' folder, and translate to features in 'Your_folder/Results/features.txt'<br />
+- Split into 80% for training set (not used), and 20% as test set.<br />
+- Retrained classifiers using the 80% training set, and reproduce the results on the 20% test set.<br /><br />
 
 
-The code contains 3 classifiers: logistic regression, decision tree, and random forest. The classifiers are trained using 80% of dataset and tested using the rest 20%.
-
-
-
-
+The code contains 3 classifiers: logistic regression, decision tree, and random forest. All classifiers were trained using GridSearch to find the best combination of paramaters.
 
 
 
