@@ -53,8 +53,9 @@ Specifically, the crawler will download:<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/full```<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/references```<br />
 - ```http://cochranelibrary.com/cdsr/doi/{}/information```<br />
-where {} is the DOI
-<br />
+where {} is the DOI.<br />
+
+
 **extractor.py**<br />
 This code will extract relevant information from the HTML files:
 - Search date<br />
