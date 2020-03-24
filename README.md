@@ -74,9 +74,8 @@ The code will read the HTML files in HTML_SystematicReviews folder in Your_Folde
 **classifiers.py**<br />
 Type   python classifiers.py    on the console, or run classifiers.py from IDE. A menu will appear:
 ```
-[1] Run default setting and load previous trained classifiers
-[2] Run default setting and retrained the classifiers
-[3] Enter your own results folder
+[1] Load previous trained classifiers
+[2] Retrained the classifiers on your dataset
 ```
 **[1] Load previous trained classifiers**<br />
 This choice will:<br />
