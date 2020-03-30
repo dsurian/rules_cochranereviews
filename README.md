@@ -74,20 +74,21 @@ The code will read the HTML files in HTML_SystematicReviews folder in Your_Folde
 Type   python classifiers.py    on the console, or run classifiers.py from IDE. A menu will appear:
 ```
 [1] Load previous trained classifiers
-[2] Retrained the classifiers on your dataset
+[2] Train the classifiers on your dataset
 ```
 **[1] Load previous trained classifiers**<br />
 This choice will:<br />
 - Read features in 'Results/features.txt'<br />
 - Split into 80% for training set (not used), and 20% as test set<br />
 - Load previous trained classifiers in 'Results/cpickle/' folder and produce the results on the 20% test set<br />
+- Reproduce the reported results<br />
 
-**[2] Retrained the classifiers on your dataset**<br />
+**[2] Train the classifiers on your dataset**<br />
 This choice will:<br />
 - You will need to enter Your_folder name<br />
-- Read 'extracted_info.txt' in 'Your_folder/Results/' folder, and translate to features in 'Your_folder/Results/features.txt'<br />
-- Split into 80% for training set (not used), and 20% as test set.<br />
-- Retrained classifiers using the 80% training set, and reproduce the results on the 20% test set.<br /><br />
+- Read 'extracted_info.txt' in 'Your_folder/Results/' folder<br />
+- Split into 80% for training set, and 20% as test set.<br />
+- Train classifiers using the 80% training set and test on the 20% test set.<br /><br />
 
 
 The code contains 3 classifiers: logistic regression, decision tree, and random forest. All classifiers were trained using GridSearch to find the best combination of paramaters.

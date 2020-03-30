@@ -14,7 +14,6 @@ import bs4
 import re
 import urllib
 import io
-import datetime
 import random
 
 
@@ -228,6 +227,10 @@ def dump_var(data, outFile):
 
 def load_var(inFile):
     return pickle.load(open(inFile + '.cpickle', "rb"))
+
+def write_to_file(outFile, text, mode):
+    with open(outFile, mode) as oF:
+        oF.write(text)
 
 def done():
     print ('\nFinish')
