@@ -95,29 +95,16 @@ The code contains 3 classifiers: logistic regression, decision tree, and random 
 
 **Logistic regression**<br />
 ```
-    parameters = {'penalty': ['l1', 'l2'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'class_weight': ['balanced'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'solver': ['liblinear'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'n_jobs': [-1],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'random_state':[42]}
+    parameters = {'penalty': ['l1', 'l2'],'class_weight': ['balanced'],'solver': ['liblinear'],'n_jobs': [-1],'random_state':[42]}
 ```
 **Decision tree**<br />
 ```
-    parameters = {"criterion": ["entropy", "gini"],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'class_weight': ['balanced'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'max_features': ['auto', 'sqrt', 'log2'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'max_depth': [2, 3, 4],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'random_state':[42]}
+    parameters = {"criterion": ["entropy", "gini"],'class_weight': ['balanced'],'max_features': ['auto', 'sqrt', 'log2'],'max_depth': [2, 3, 4],'random_state':[42]}
 ```
 **Random forest**<br />
 
 ```
-    parameters={'n_estimators': range(5,105,5),<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'criterion':['entropy','gini'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'class_weight':['balanced'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'max_features':['auto', 'sqrt', 'log2'],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'max_depth': [2, 3, 4],<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;'random_state':[42]
+    parameters={'n_estimators': range(5,105,5),'criterion':['entropy','gini'],'class_weight':['balanced'],'max_features':['auto', 'sqrt', 'log2'],'max_depth': [2, 3, 4],'random_state':[42]
 ```
 
 The 
