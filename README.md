@@ -91,7 +91,38 @@ This choice will:<br />
 - Train classifiers using the 80% training set and test on the 20% test set.<br /><br />
 
 
-The code contains 3 classifiers: logistic regression, decision tree, and random forest. All classifiers were trained using GridSearch to find the best combination of paramaters.
+The code contains 3 classifiers: logistic regression, decision tree, and random forest. All classifiers were trained using GridSearch to find the best combination of paramaters. Specifically, the tested combinations of parameters for each classifiers were:<br />
+
+**Logistic regression**<br />
+```
+    parameters = {'penalty': ['l1', 'l2'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'class_weight': ['balanced'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'solver': ['liblinear'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'n_jobs': [-1],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'random_state':[42]}
+```
+**Decision tree**<br />
+```
+    parameters = {"criterion": ["entropy", "gini"],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'class_weight': ['balanced'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'max_features': ['auto', 'sqrt', 'log2'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'max_depth': [2, 3, 4],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'random_state':[42]}
+```
+**Random forest**<br />
+
+```
+    parameters={'n_estimators': range(5,105,5),<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'criterion':['entropy','gini'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'class_weight':['balanced'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'max_features':['auto', 'sqrt', 'log2'],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'max_depth': [2, 3, 4],<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;'random_state':[42]
+```
+
+The 
+
+
 
 
 
