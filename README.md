@@ -91,7 +91,7 @@ This choice will:<br />
 - Train classifiers using the 80% training set and test on the 20% test set.<br /><br />
 
 
-The code contains 3 classifiers: logistic regression, decision tree, and random forest. All classifiers were trained using GridSearch to find the best combination of paramaters. Specifically, the tested combinations of parameters for each classifiers were:<br />
+The code contains 3 classifiers: logistic regression, decision tree, and random forest. All classifiers were trained using GridSearch to find the best combination of paramaters. Specifically, the tested combinations of parameters for each trained classifiers were:<br />
 
 **Logistic regression**<br />
 ```
@@ -107,7 +107,7 @@ The code contains 3 classifiers: logistic regression, decision tree, and random 
     parameters={'n_estimators': range(5,105,5),'criterion':['entropy','gini'],'class_weight':['balanced'],'max_features':['auto', 'sqrt', 'log2'],'max_depth': [2, 3, 4],'random_state':[42]
 ```
 
-The 
+The combinations of parameters can be found in classifiers.py (run_gridsearchcv_RFClassifier(), run_gridsearchcv_DTClassifier(), run_gridsearchcv_LogisticRegression())
 
 
 
