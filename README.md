@@ -1,8 +1,7 @@
 # Extracting relevant information from Cochrane reviews
 This repository contains an updated version of the implementation of rules for automatically extracting relevant information from Cochrane reviews. 
 
-Original implementation: https://github.com/Rabia-Bashir/rules_data_ext/  
-Credit to: Rabia Bashir.
+Initial implementation by Rabia Bashir: https://github.com/Rabia-Bashir/rules_data_ext/  
 
 ### Environment
 ---
@@ -95,7 +94,7 @@ The code contains 3 classifiers: logistic regression, decision tree, and random 
 
 **Logistic regression**<br />
 ```
-    parameters = {'penalty': ['l1', 'l2'],'class_weight': ['balanced'],'solver': ['liblinear'],'n_jobs': [-1],'random_state':[42]}
+    parameters = {'penalty': ['l1', 'l2'],'class_weight': ['balanced'],'solver': ['liblinear'], ‘C’: [0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0], ’n_jobs': [-1],'random_state':[42]}
 ```
 **Decision tree**<br />
 ```
