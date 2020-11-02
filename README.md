@@ -7,9 +7,10 @@ Initial implementation by Rabia Bashir: https://github.com/Rabia-Bashir/rules_da
 ---
 The code was built and tested on:
 * python 2.7.16 (Anaconda)
-* sklearn: 0.20.3
-* numpy: 1.16.5
-* OS X El Capitan v10.11.6
+* scikit-learn: 0.20.3
+* SciPy: 1.2.1
+* NumPy: 1.16.5
+* macOS Catalina 10.15.6
 
 ### Note
 ---
