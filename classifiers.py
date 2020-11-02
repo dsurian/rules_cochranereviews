@@ -16,10 +16,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import Lasso
 from sklearn import tree
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve, auc, roc_auc_score
 from sklearn.metrics import precision_recall_fscore_support, brier_score_loss
 from scipy.stats import ks_2samp
+from scipy.stats import mannwhitneyu
 from sklearn.utils import resample
 import scipy.stats
 from scipy import stats
@@ -29,16 +31,72 @@ import warnings
 import matplotlib.pyplot as plt
 from sklearn.calibration import calibration_curve
 from matplotlib.offsetbox import AnchoredText
+from collections import Counter
 warnings.filterwarnings('ignore')
 
 
 
+
+def ci_bootstrap_calibrationcurve(clf, X, y, numbsampling=2000):
+    np.random.seed(42)
+
+    d_group_d_xy_l = {}
+    for _ in xrange(numbsampling):
+        l_ix_rand = np.random.choice(len(y), replace=True, size=len(y)).tolist()
+        X_sample = X[l_ix_rand, :]
+        y_sample = y[l_ix_rand]
+
+        if hasattr(clf, "predict_proba"):
+            prob_pos = clf.predict_proba(X_sample)[:, 1]
+        else:  # use decision function
+            prob_pos = clf.decision_function(X_sample)
+            prob_pos = \
+                (prob_pos - prob_pos.min()) / (prob_pos.max() - prob_pos.min())
+
+        fraction_of_positives_ci_y, mean_predicted_value_ci_x = calibration_curve(y_sample, prob_pos, n_bins=10)
+
+        l_ixsort = list(np.argsort(mean_predicted_value_ci_x))
+        l_y = list(fraction_of_positives_ci_y)
+        l_x = list(mean_predicted_value_ci_x)
+        for i in xrange(len(l_ixsort)):
+            ix = l_ixsort[i]
+
+            ci_x = l_x[ix]
+            ci_y = l_y[ix]
+            if i in d_group_d_xy_l:
+                d_group_d_xy_l[i]['x'].append(ci_x)
+                d_group_d_xy_l[i]['y'].append(ci_y)
+            else:
+                d_group_d_xy_l[i] = {'x': [ci_x], 'y': [ci_y]}
+
+    ltup_lower_upper_x = []
+    ltup_lower_upper_y = []
+    for i in xrange(len(d_group_d_xy_l)):
+        l_x = d_group_d_xy_l[i]['x']
+        l_y = d_group_d_xy_l[i]['y']
+
+        lower_x, upper_x = confint(l_x)
+        lower_y, upper_y = confint(l_y)
+        ltup_lower_upper_x.append((lower_x, upper_x))
+        ltup_lower_upper_y.append((lower_y, upper_y))
+
+    return ltup_lower_upper_x, ltup_lower_upper_y
+
+# ---
+# Calibration curve
+#   y: prob true; the proportion of samples whose class is the positive class, in each bin (fraction of positives)
+#   x: prob pred; the mean predicted probability in each bin
 def calibration(X_test, y_test, l_clf_modelname):
     plt.figure(figsize=(10, 10))
     ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
     ax2 = plt.subplot2grid((3, 1), (2, 0))
 
     ax1.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
+
+    d_name_l_mean_predicted_value_x = {}
+    d_name_l_fraction_of_positives_y = {}
+    d_name_ltup_lower_upper_x_ci = {}
+    d_name_ltup_lower_upper_y_ci = {}
     d_name_brierscore = {}
     for clf, name in l_clf_modelname:
         y_pred = clf.predict(X_test)
@@ -51,12 +109,28 @@ def calibration(X_test, y_test, l_clf_modelname):
         fraction_of_positives, mean_predicted_value = \
             calibration_curve(y_test, prob_pos, n_bins=10)
 
-        clf_score = brier_score_loss(y_test, prob_pos, pos_label=y.max())
+        l_ixsort = list(np.argsort(mean_predicted_value))
+        l_fraction_of_positives = list(fraction_of_positives)
+        l_mean_predicted_value = list(mean_predicted_value)
+        l_mean_predicted_value_x = []
+        l_fraction_of_positives_y = []
+        for i in xrange(len(l_ixsort)):
+            ix = l_ixsort[i]
+            l_mean_predicted_value_x.append(l_mean_predicted_value[ix])
+            l_fraction_of_positives_y.append(l_fraction_of_positives[ix])
+        d_name_l_mean_predicted_value_x[name] = l_mean_predicted_value_x
+        d_name_l_fraction_of_positives_y[name] = l_fraction_of_positives_y
+
+        ltup_lower_upper_x, ltup_lower_upper_y = ci_bootstrap_calibrationcurve(clf, X_test, y_test)
+        d_name_ltup_lower_upper_x_ci[name] = ltup_lower_upper_x
+        d_name_ltup_lower_upper_y_ci[name] = ltup_lower_upper_y
+
+        clf_score = brier_score_loss(y_test, prob_pos, pos_label=y_test.max())
         print("%s:" % name)
         print("\tBrier score: %1.3f" % (clf_score))
         d_name_brierscore[name] = clf_score
 
-        ax1.plot(mean_predicted_value, fraction_of_positives, "s-",
+        ax1.plot(mean_predicted_value, fraction_of_positives, "s-.",
                  label="%s" % (name,))
 
         ax2.hist(prob_pos, range=(0, 1), bins=10, label=name,
@@ -83,6 +157,20 @@ def calibration(X_test, y_test, l_clf_modelname):
     plt.savefig(fname, bbox_inches='tight', format='pdf')
     plt.show()
 
+    for name in d_name_l_mean_predicted_value_x:
+        print ('{0}'.format(name))
+        l_mean_predicted_value_x = d_name_l_mean_predicted_value_x[name]
+        l_fraction_of_positives_y = d_name_l_fraction_of_positives_y[name]
+
+        for ix in xrange(len(l_mean_predicted_value_x)):
+            x = l_mean_predicted_value_x[ix]
+            y = l_fraction_of_positives_y[ix]
+            tup_lower_upper_ci_x = d_name_ltup_lower_upper_x_ci[name][ix]
+            tup_lower_upper_ci_y = d_name_ltup_lower_upper_y_ci[name][ix]
+
+            print ('\t{0} [{1}-{2}], {3} [{4}-{5}]'.format(x, tup_lower_upper_ci_x[0], tup_lower_upper_ci_x[1],
+                                            y, tup_lower_upper_ci_y[0], tup_lower_upper_ci_y[1]))
+
 def get_acc_aucroc_prec_recall_f1score(y_sample, y_sample_pred, scores_sample_pred):
     acc = accuracy_score(y_sample, y_sample_pred)
     aucroc = roc_auc_score(y_sample, scores_sample_pred)
@@ -91,12 +179,13 @@ def get_acc_aucroc_prec_recall_f1score(y_sample, y_sample_pred, scores_sample_pr
 
     return acc, aucroc, prec, recall, f1score
 
-def confintv(stats):
-    alpha = 0.95
-    p = ((1.0 - alpha) / 2.0) * 100
-    lower = max(0.0, np.percentile(stats, p))
-    p = (alpha + ((1.0 - alpha) / 2.0)) * 100
-    upper = min(1.0, np.percentile(stats, p))
+def confint(data):
+    alpha = 0.05
+    estimate = np.mean(data)
+    lower = np.percentile(data, 100 * (alpha / 2))
+    upper = np.percentile(data, 100 * (1 - alpha / 2))
+    stderr = np.std(data)
+
     return lower, upper
 
 def ci_bootstrap_train(clf_name, optimised_clf, optimised_clf_param, X, y, features_name,
@@ -104,8 +193,10 @@ def ci_bootstrap_train(clf_name, optimised_clf, optimised_clf_param, X, y, featu
     np.random.seed(42)
 
     d_featurename_lvals = {}
+    d_featurename_lvals_exponentiated_logreg = {}
     for featName in features_name:
         d_featurename_lvals[featName] = []
+        d_featurename_lvals_exponentiated_logreg[featName] = []
 
     l_accuracy = []
     l_aucroc = []
@@ -144,10 +235,9 @@ def ci_bootstrap_train(clf_name, optimised_clf, optimised_clf_param, X, y, featu
             l_f1score.append(f1score)
 
             featimportance = clf.coef_[0]
-            top = np.argpartition(featimportance, -4)[-4:]
-            top_sorted = top[np.argsort(featimportance[top])]
-            for i in top_sorted:
+            for i in xrange(len(featimportance)):
                 d_featurename_lvals[features_name[i]].append(featimportance[i])
+                d_featurename_lvals_exponentiated_logreg[features_name[i]].append(math.exp(featimportance[i]))
 
         elif clf_name == 'Decision tree':
             clf = tree.DecisionTreeClassifier()
@@ -204,23 +294,23 @@ def ci_bootstrap_train(clf_name, optimised_clf, optimised_clf_param, X, y, featu
     print ('\tConfidence interval: {0}'.format(alpha))
 
     # -- Accuracy
-    lower, upper = confintv(np.asarray(l_accuracy))
+    lower, upper = confint(np.asarray(l_accuracy))
     print ('\t\tAccuracy: {2} ({0}-{1})'.format(lower * 100, upper * 100, acc_calc * 100))
 
     # -- Precision
-    lower, upper = confintv(np.asarray(l_precision))
+    lower, upper = confint(np.asarray(l_precision))
     print ('\t\tPrecision: {2} ({0}-{1})'.format(lower * 100, upper * 100, prec_calc * 100))
 
     # -- Recall
-    lower, upper = confintv(np.asarray(l_recall))
+    lower, upper = confint(np.asarray(l_recall))
     print ('\t\tRecall: {2} ({0}-{1})'.format(lower * 100, upper * 100, recall_calc * 100))
 
     # -- F1-score
-    lower, upper = confintv(np.asarray(l_f1score))
+    lower, upper = confint(np.asarray(l_f1score))
     print ('\t\tF1-score: {2} ({0}-{1})'.format(lower * 100, upper * 100, fscore_calc * 100))
 
     # -- AUCROC
-    lower, upper = confintv(np.asarray(l_aucroc))
+    lower, upper = confint(np.asarray(l_aucroc))
     print ('\t\tAUCROC: {2} ({0}-{1})'.format(lower, upper, aucroc_calc))
 
     print ('')
@@ -233,8 +323,12 @@ def ci_bootstrap_train(clf_name, optimised_clf, optimised_clf_param, X, y, featu
             print ('\t{0}: {1}. '.format(features_name[i], featimportance[i])),
 
             # -- CI
-            lower, upper = confintv(np.asarray(d_featurename_lvals[features_name[i]]))
+            lower, upper = confint(np.asarray(d_featurename_lvals[features_name[i]]))
             print ('{0}% CI: ({1}-{2})'.format(alpha, lower, upper))
+
+            # -- Exponentiated
+            lower, upper = confint(np.asarray(d_featurename_lvals_exponentiated_logreg[features_name[i]]))
+            print('\t\tExponentiated {0}% CI: {1} ({2}-{3})'.format(alpha, math.exp(featimportance[i]), lower, upper))
 
     elif clf_name == 'Decision tree' or clf_name == 'Random forest':
         featimportance = optimised_clf.feature_importances_
@@ -242,12 +336,18 @@ def ci_bootstrap_train(clf_name, optimised_clf, optimised_clf_param, X, y, featu
             print ('\t{0}: {1}'.format(features_name[i], featimportance[i])),
 
             # -- CI
-            lower, upper = confintv(np.asarray(d_featurename_lvals[features_name[i]]))
+            lower, upper = confint(np.asarray(d_featurename_lvals[features_name[i]]))
             print ('{0}% CI: ({1}-{2})'.format(alpha, lower, upper))
 
 def ci_bootstrap_test(clf_name, optimised_clf, X, y, features_name,
                  acc_calc, prec_calc, recall_calc, fscore_calc, aucroc_calc, n=2000):
     np.random.seed(42)
+
+    d_featurename_lvals = {}
+    d_featurename_lvals_exponentiated_logreg = {}
+    for featName in features_name:
+        d_featurename_lvals[featName] = []
+        d_featurename_lvals_exponentiated_logreg[featName] = []
 
     l_accuracy = []
     l_aucroc = []
@@ -277,45 +377,38 @@ def ci_bootstrap_test(clf_name, optimised_clf, X, y, features_name,
     print ('\tConfidence interval: {0}'.format(alpha))
 
     # -- Accuracy
-    lower, upper = confintv(np.asarray(l_accuracy))
+    lower, upper = confint(np.asarray(l_accuracy))
     print ('\t\tAccuracy: {2} ({0}-{1})'.format(lower * 100, upper * 100, acc_calc * 100))
 
     # -- Precision
-    lower, upper = confintv(np.asarray(l_precision))
+    lower, upper = confint(np.asarray(l_precision))
     print ('\t\tPrecision: {2} ({0}-{1})'.format(lower * 100, upper * 100, prec_calc * 100))
 
     # -- Recall
-    lower, upper = confintv(np.asarray(l_recall))
+    lower, upper = confint(np.asarray(l_recall))
     print ('\t\tRecall: {2} ({0}-{1})'.format(lower * 100, upper * 100, recall_calc * 100))
 
     # -- F1-score
-    lower, upper = confintv(np.asarray(l_f1score))
+    lower, upper = confint(np.asarray(l_f1score))
     print ('\t\tF1-score: {2} ({0}-{1})'.format(lower * 100, upper * 100, fscore_calc * 100))
 
     # -- AUCROC
-    lower, upper = confintv(np.asarray(l_aucroc))
+    lower, upper = confint(np.asarray(l_aucroc))
     print ('\t\tAUCROC: {2} ({0}-{1})'.format(lower, upper, aucroc_calc))
 
 
-    if clf_name == 'Logistic regression':
-        featimportance = optimised_clf.coef_[0]
-        top = np.argpartition(featimportance, -4)[-4:]
-        top_sorted = top[np.argsort(featimportance[top])]
-        for i in top_sorted:
-            print ('\t{0}: {1}. '.format(features_name[i], featimportance[i])),
+def run_gridsearchcv_Lasso(X, y):
+    alphas = np.logspace(-4, -0.5, 30)
+    alphas = np.append(alphas, 1.0)
+    parameters = {'alpha': alphas,
+                  'random_state':[42]
+                  }
 
-            # -- CI
-            lower, upper = confintv(np.asarray(d_featurename_lvals[features_name[i]]))
-            print ('{0}% CI: ({1}-{2})'.format(alpha, lower, upper))
+    clf = Lasso(max_iter=1000, fit_intercept=True)
+    grid_search = GridSearchCV(estimator=clf, param_grid=parameters, cv=5, refit=True, iid=True)
+    grid_search.fit(X, y)
 
-    elif clf_name == 'Decision tree' or clf_name == 'Random forest':
-        featimportance = optimised_clf.feature_importances_
-        for i in xrange(len(featimportance)):
-            print ('\t{0}: {1}'.format(features_name[i], featimportance[i]))
-
-            # -- CI
-            lower, upper = confintv(np.asarray(d_featurename_lvals[features_name[i]]))
-            print ('{0}% CI: ({1}-{2})'.format(alpha, lower, upper))
+    return grid_search.best_estimator_, grid_search.best_estimator_.get_params()
 
 def run_gridsearchcv_LogisticRegression(X, y):
     parameters = {'penalty': ['l1', 'l2'],
@@ -367,7 +460,61 @@ def run_gridsearchcv_DTClassifier(X, y):
 
     return optimised_clf, optimised_params
 
+from statsmodels.stats.proportion import proportion_confint
+def calc_95CI_binomial_ruledev():
+    # Number of correct prediction, number of instance were from each iteration
 
+    numCorrectPrediction, numInstances = 48, 50
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 97, 100
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 50, 50
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 100, 100
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 48, 50
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 95, 100
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 98, 100
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 143, 150
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 146, 150
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    numCorrectPrediction, numInstances = 192, 200
+    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
+    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
+    print ('\t{0}, {1}'.format(lower, upper))
+
+    done()
 
 def get_stat(d_feature_d_conclusion_l_vals):
     for feature in d_feature_d_conclusion_l_vals:
@@ -394,9 +541,11 @@ def get_stat(d_feature_d_conclusion_l_vals):
 
             print ('\t\tQ1: {0}, Q2: {1}, Q3: {2}, IQR: {3}'.format(Q1, Q2, Q3, IQR))
 
-        _, pval = ks_2samp(np.asarray(l_lvals[0]), np.asarray(l_lvals[1]))
+        # _, pval = ks_2samp(np.asarray(l_lvals[0]), np.asarray(l_lvals[1]))
+        # print ('\tp-val: {0}\n'.format(pval))
 
-        print ('\tp-val: {0}\n'.format(pval))
+        _, pval = mannwhitneyu(np.asarray(l_lvals[0]), np.asarray(l_lvals[1]))
+        print ('\tp-val (Mann-Whitney U test): {0}\n'.format(pval))
 
 def evaluate_test(clf, a_labels_test, X_test):
     a_labels_pred = clf.predict(X_test)
@@ -518,62 +667,16 @@ def done():
     print ('\nFinish')
     sys.exit()
 
-
-from statsmodels.stats.proportion import proportion_confint
-def calc_95CI_binomial_ruledev():
-    numCorrectPrediction, numInstances = 48, 50
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 97, 100
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 50, 50
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 100, 100
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 48, 50
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 95, 100
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 98, 100
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 143, 150
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 146, 150
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
-    numCorrectPrediction, numInstances = 192, 200
-    lower, upper = proportion_confint(numCorrectPrediction, numInstances, 0.05)   # 0.05: 95% CI
-    print ('numCorrectPrediction: {0}, numInstances: {1}'.format(numCorrectPrediction, numInstances))
-    print ('\t{0}, {1}'.format(lower, upper))
-
+def print_env():
+    print ('scikit-learn {0}'.format(sklearn.__version__))
+    print ('SciPy {0}'.format(scipy.__version__))
+    print ('NumPy {0}'.format(np.__version__))
     done()
 
+
 if __name__ == '__main__':
+    # print_env()
+
     resultFolder = 'Results/'
     cpickleFolder = 'cpickle/'
 
@@ -592,8 +695,6 @@ if __name__ == '__main__':
 
     if LOAD_PREVIOUS:
         print ('> Load previous trained classifiers ...')
-
-        # calc_95CI_binomial_ruledev()    # to calculate the 95% CI based on the Binomial proportion
 
         # -- Read data
         inFile = resultFolder + 'extracted_info.txt'
@@ -620,7 +721,7 @@ if __name__ == '__main__':
         numbLabel1 = np.sum(y_train)
         lenytrain = len(y_train)
         propLabel1 = numbLabel1 / lenytrain * 100
-        print ('\ny_train. len: {0}, numb label 1: {1} ({2}%)\n'.format(numbLabel1, lenytrain, propLabel1))
+        print ('\ny_train. len: {0}, numb label 1: {1} ({2}%)\n'.format(lenytrain, numbLabel1, propLabel1))
 
         # -- Classifiers
         # ----------------------
@@ -694,6 +795,25 @@ if __name__ == '__main__':
 
         calibration(X_test, y_test, l_clf_modelname)
 
+
+
+        # calc_95CI_binomial_ruledev()    # to calculate the 95% CI based on the Binomial proportion
+        # -- feature importance based on LASSO
+        print ('\nLasso')
+        print ('------------')
+        # optimised_Lasso, optimised_params_Lasso = run_gridsearchcv_Lasso(X_train, y_train)
+        # print ('{0}'.format(optimised_params_Lasso))
+        # dump_var(optimised_Lasso, resultFolder + cpickleFolder + 'optimised_Lasso')
+        # dump_var(optimised_params_Lasso, resultFolder + cpickleFolder + 'optimised_params_Lasso')
+
+        optimised_Lasso = load_var(resultFolder + cpickleFolder + 'optimised_Lasso')
+        optimised_params_Lasso = load_var(resultFolder + cpickleFolder + 'optimised_params_Lasso')
+
+        featimportance = optimised_Lasso.coef_
+
+        for i in xrange(len(featimportance)):
+            print ('\t{0}: {1}'.format(features_name[i], featimportance[i]))
+
         done()
 
 
@@ -743,6 +863,13 @@ if __name__ == '__main__':
         print ('\nLogistic Regression')
         print ('------------')
         optimised_LR, optimised_params_LR = run_gridsearchcv_LogisticRegression(X_train, y_train)
+        print ('{0}'.format(optimised_params_LR))
+        dump_var(optimised_LR, resultFolder + cpickleFolder + 'optimised_LR_own')
+        dump_var(optimised_params_LR, resultFolder + cpickleFolder + 'optimised_params_LR_own')
+
+        optimised_LR = load_var(resultFolder + cpickleFolder + 'optimised_LR_own')
+        optimised_params_LR = load_var(resultFolder + cpickleFolder + 'optimised_params_LR_own')
+
         print ('[ Training set ]')
         acc, prec, recall, fscore, aucroc = evaluate_test(optimised_LR, y_train, X_train)
         ci_bootstrap_train('Logistic regression', optimised_LR, optimised_params_LR, X_train, y_train, features_name,
@@ -757,6 +884,13 @@ if __name__ == '__main__':
         print ('\nDecision Tree')
         print ('------------')
         optimised_DT, optimised_params_DT = run_gridsearchcv_DTClassifier(X_train, y_train)
+        print ('{0}'.format(optimised_params_DT))
+        dump_var(optimised_DT, resultFolder + cpickleFolder + 'optimised_DT_own')
+        dump_var(optimised_params_DT, resultFolder + cpickleFolder + 'optimised_params_DT_own')
+
+        optimised_DT = load_var(resultFolder + cpickleFolder + 'optimised_DT_own')
+        optimised_params_DT = load_var(resultFolder + cpickleFolder + 'optimised_params_DT_own')
+
         print ('[ Training set ]')
         acc, prec, recall, fscore, aucroc = evaluate_test(optimised_DT, y_train, X_train)
         ci_bootstrap_train('Decision tree', optimised_DT, optimised_params_DT, X_train, y_train, features_name,
@@ -771,6 +905,13 @@ if __name__ == '__main__':
         print ('\nRandom Forest')
         print ('------------')
         optimised_RF, optimised_params_RF = run_gridsearchcv_RFClassifier(X_train, y_train)
+        print ('{0}'.format(optimised_params_RF))
+        dump_var(optimised_RF, resultFolder + cpickleFolder + 'optimised_RF_own')
+        dump_var(optimised_params_RF, resultFolder + cpickleFolder + 'optimised_params_RF_own')
+
+        optimised_RF = load_var(resultFolder + cpickleFolder + 'optimised_RF')
+        optimised_params_RF = load_var(resultFolder + cpickleFolder + 'optimised_params_RF_own')
+
         print ('[ Training set ]')
         acc, prec, recall, fscore, aucroc = evaluate_test(optimised_RF, y_train, X_train)
         ci_bootstrap_train('Random forest', optimised_RF, optimised_params_RF, X_train, y_train, features_name,
