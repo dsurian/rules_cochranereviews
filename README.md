@@ -115,4 +115,4 @@ The combinations of parameters can be found in classifiers.py (run_gridsearchcv_
 
 # Reference
 ---
-1. *A rule-based approach for automatically extracting data from systematic reviews and their updates to model the risk of conclusion change*. Rabia Bashir, Adam G. Dunn, Didi Surian. Research Synthesis Methods (2020, under review).
+1. *A rule-based approach for automatically extracting data from systematic reviews and their updates to model the risk of conclusion change*. Rabia Bashir, Adam G. Dunn, Didi Surian. Research Synthesis Methods, 2021:1-10
